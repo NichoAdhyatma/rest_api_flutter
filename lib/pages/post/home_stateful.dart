@@ -1,26 +1,21 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:rest_api_flutter/models/http_stateful.dart';
+import 'package:rest_api_flutter/models/post/http_stateful.dart';
 
 class HomeStateful extends StatefulWidget {
   const HomeStateful({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeStatefulState createState() => _HomeStatefulState();
 }
 
 class _HomeStatefulState extends State<HomeStateful> {
   HttpStateful data = HttpStateful();
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("GET - STATEFUL"),
+        title: const Text("POST - STATEFUL"),
       ),
       body: Container(
         width: double.infinity,
@@ -28,23 +23,9 @@ class _HomeStatefulState extends State<HomeStateful> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: SizedBox(
-                height: 100,
-                width: 100,
-                child: Image.network(
-                  data.avatar.isNotEmpty
-                      ? data.avatar
-                      : "https://www.uclg-planning.org/sites/default/files/styles/featured_home_left/public/no-user-image-square.jpg?itok=PANMBJF-",
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
             FittedBox(
               child: Text(
-                "ID : ${data.id.isNotEmpty ? data.id : "Belum ada data"}",
+                data.id.isNotEmpty ? "ID : ${data.id}" : "ID : Belum ada data",
                 style: const TextStyle(fontSize: 20),
               ),
             ),
@@ -53,7 +34,7 @@ class _HomeStatefulState extends State<HomeStateful> {
                 child: Text("Name : ", style: TextStyle(fontSize: 20))),
             FittedBox(
               child: Text(
-                data.fullname.isNotEmpty ? data.fullname : "Belum ada data",
+                data.name.isNotEmpty ? data.name : "Belum ada data",
                 style: const TextStyle(
                   fontSize: 20,
                 ),
@@ -61,10 +42,21 @@ class _HomeStatefulState extends State<HomeStateful> {
             ),
             const SizedBox(height: 20),
             const FittedBox(
-                child: Text("Email : ", style: TextStyle(fontSize: 20))),
+                child: Text("Job : ", style: TextStyle(fontSize: 20))),
             FittedBox(
               child: Text(
-                data.email.isNotEmpty ? data.email : "Belum ada data",
+                data.job.isNotEmpty ? data.job : "Belum ada data",
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const FittedBox(
+                child: Text("Created At : ", style: TextStyle(fontSize: 20))),
+            FittedBox(
+              child: Text(
+                data.createdAt.isNotEmpty ? data.createdAt : "Belum ada data",
                 style: const TextStyle(
                   fontSize: 20,
                 ),
@@ -73,15 +65,16 @@ class _HomeStatefulState extends State<HomeStateful> {
             const SizedBox(height: 100),
             OutlinedButton(
               onPressed: () {
-                HttpStateful.fetchApi((1 + Random().nextInt(13)).toString())
-                    .then(
+                HttpStateful.connectAPI("Nicho", "Developer").then(
                   (value) => setState(
-                    () => data = value,
+                    () {
+                      data = value;
+                    },
                   ),
                 );
               },
               child: const Text(
-                "GET DATA",
+                "POST DATA",
                 style: TextStyle(
                   fontSize: 25,
                 ),

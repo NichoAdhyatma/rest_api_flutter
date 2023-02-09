@@ -1,8 +1,8 @@
-import 'dart:math';
-
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:rest_api_flutter/models/http_provider.dart';
+import 'package:rest_api_flutter/models/post/http_provider.dart';
 
 class HomeProvider extends StatelessWidget {
   const HomeProvider({super.key});
@@ -13,7 +13,7 @@ class HomeProvider extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("GET - PROVIDER"),
+        title: const Text("POST - PROVIDER"),
       ),
       body: Container(
         width: double.infinity,
@@ -21,25 +21,12 @@ class HomeProvider extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: SizedBox(
-                height: 100,
-                width: 100,
-                child: Consumer<HttpProvider>(
-                  builder: (context, value, child) => Image.network(
-                    value.data["avatar"] ??
-                        "https://www.uclg-planning.org/sites/default/files/styles/featured_home_left/public/no-user-image-square.jpg?itok=PANMBJF-",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
             FittedBox(
               child: Consumer<HttpProvider>(
                 builder: (context, value, child) => Text(
-                  "ID : ${value.data["id"] ?? "Belum ada data"}",
+                  value.data["id"] != null
+                      ? "ID : ${value.data["id"]}"
+                      : "ID : Belum ada data",
                   style: const TextStyle(fontSize: 20),
                 ),
               ),
@@ -50,40 +37,43 @@ class HomeProvider extends StatelessWidget {
             FittedBox(
               child: Consumer<HttpProvider>(
                 builder: (context, value, child) => Text(
-                  value.data["first_name"] != null &&
-                          value.data["last_name"] != null
-                      ? value.data["first_name"] + " " + value.data["last_name"]
-                      : "Belum ada data",
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
+                  value.data["name"] ?? "Belum ada data",
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
             ),
             const SizedBox(height: 20),
             const FittedBox(
-              child: Text(
-                "Email : ",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
+                child: Text("Job : ", style: TextStyle(fontSize: 20))),
             FittedBox(
               child: Consumer<HttpProvider>(
                 builder: (context, value, child) => Text(
-                  value.data["email"] ?? "Belum ada data",
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
+                  value.data["job"] ?? "Belum ada data",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const FittedBox(
+                child: Text("Created At : ", style: TextStyle(fontSize: 20))),
+            FittedBox(
+              child: Consumer<HttpProvider>(
+                builder: (context, value, child) => Text(
+                  value.data["createdAt"] != null
+                      ? DateFormat.yMMMEd().add_Hms()
+                          .format(DateTime.parse(value.data["createdAt"]))
+                      : "Belum ada data",
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
             ),
             const SizedBox(height: 100),
             OutlinedButton(
               onPressed: () {
-                data.fetchApi((1 + Random().nextInt(13)).toString());
+                data.connectAPI(faker.person.name(), faker.job.title());
               },
               child: const Text(
-                "GET DATA",
+                "POST DATA",
                 style: TextStyle(
                   fontSize: 25,
                 ),
