@@ -80,7 +80,7 @@ class HomeProvider extends StatelessWidget {
             const SizedBox(height: 100),
             OutlinedButton(
               onPressed: () {
-                data.fetchApi((1 + Random().nextInt(13)).toString());
+                data.fetchApi((1 + Random().nextInt(13)).toString(), context);
               },
               child: const Text(
                 "GET DATA",
@@ -91,6 +91,12 @@ class HomeProvider extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          data.delete(context);
+        },
+        child: const Icon(Icons.delete),
       ),
     );
   }

@@ -12,15 +12,15 @@ class HttpProvider with ChangeNotifier {
   void connectAPI(String name, String job) async {
     Uri url = Uri.parse("https://reqres.in/api/users");
 
-    var response = await http.post(
+    await http.post(
       url,
       body: {
         "name": name,
         "job": job,
       },
+    ).then(
+      (value) => _data = (json.decode(value.body))["data"],
     );
-
-    _data = json.decode(response.body);
 
     notifyListeners();
   }

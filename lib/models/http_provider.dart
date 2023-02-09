@@ -8,13 +8,36 @@ class HttpProvider with ChangeNotifier {
   Map<String, dynamic> get data => _data;
 
   int get jumlah => _data.length;
+  late Uri url;
 
-  void fetchApi(String id) async {
-    Uri url = Uri.parse("https://reqres.in/api/users/$id");
+  void fetchApi(String id, BuildContext context) async {
+    url = Uri.parse("https://reqres.in/api/users/$id");
 
-    var response = await http.get(url);
+    await http.get(url).then(
+      (response) {
+        _data = (json.decode(response.body) as Map<String, dynamic>)["data"];
+        notifyListeners();
+        messageAlert(context, "Berhasil GET data ${response.statusCode}");
+      },
+    ).catchError((error) {
+      messageAlert(context, "Gagal GET data");
+    });
+  }
 
-    _data = (json.decode(response.body) as Map<String, dynamic>)["data"];
-    notifyListeners();
+  void delete(BuildContext context) async {
+    await http.delete(url).then((response) {
+      _data = {};
+      notifyListeners();
+      messageAlert(context, "Data berhasil dihapus ${response.statusCode}");
+    });
+  }
+
+  void messageAlert(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 }
